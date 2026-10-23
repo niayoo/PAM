@@ -1,107 +1,34 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'colors.dart';
+import 'home_screen.dart';
 
 void main() {
-  runApp(MaterialApp(
-    home: ConversieMoneda(),
-    debugShowCheckedModeBanner: false,
-  ));
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+    ),
+  );
+  runApp(const LearningApp());
 }
 
-class ConversieMoneda extends StatefulWidget {
-  @override
-  State<ConversieMoneda> createState() => _ConversieMonedaState();
-}
-
-class _ConversieMonedaState extends State<ConversieMoneda> {
-  final sumaController = TextEditingController();
-
-  String sursa = 'MDL';
-  String destinatie = 'EUR';
-  String rezultat = '';
-
-  final Map<String, double> curs = {
-    'MDL': 19.5,
-    'EUR': 1.0,
-    'USD': 1.08,
-    'RON': 4.97,
-  };
-
-  void converteste() {
-    double? suma = double.tryParse(
-      sumaController.text.replaceAll(',', '.'),
-    );
-
-    if (suma == null) {
-      setState(() {
-        rezultat = 'Introdu o suma valida!';
-      });
-      return;
-    }
-
-    double sumaEUR = suma / curs[sursa]!;
-    double sumaFinala = sumaEUR * curs[destinatie]!;
-
-    setState(() {
-      rezultat = sumaFinala.toStringAsFixed(2) + ' ' + destinatie;
-    });
-  }
+class LearningApp extends StatelessWidget {
+  const LearningApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Conversie moneda')),
-      body: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-              controller: sumaController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Introdu suma',
-              ),
-            ),
-
-            DropdownButton<String>(
-              value: sursa,
-              items: curs.keys.map((moneda) {
-                return DropdownMenuItem(
-                  value: moneda,
-                  child: Text(moneda),
-                );
-              }).toList(),
-              onChanged: (valoare) {
-                setState(() {
-                  sursa = valoare!;
-                });
-              },
-            ),
-
-            DropdownButton<String>(
-              value: destinatie,
-              items: curs.keys.map((moneda) {
-                return DropdownMenuItem(
-                  value: moneda,
-                  child: Text(moneda),
-                );
-              }).toList(),
-              onChanged: (valoare) {
-                setState(() {
-                  destinatie = valoare!;
-                });
-              },
-            ),
-
-            ElevatedButton(
-              onPressed: converteste,
-              child: Text('Converteste'),
-            ),
-
-            Text('Rezultat: $rezultat'),
-          ],
-        ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Learning',
+      theme: ThemeData(
+        scaffoldBackgroundColor: Colors.white,
+        colorScheme: ColorScheme.fromSeed(seedColor: learningBlue),
+        splashFactory: InkRipple.splashFactory,
       ),
+      home: const HomeScreen(),
     );
   }
 }
